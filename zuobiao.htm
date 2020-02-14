@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<title>批量地址</title>
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+		#l-map{height:300px;width:100%;}
+		#r-result{width:100%; font-size:14px;line-height:20px;}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=y3aQNNKsG2g3EIaX9PKYB7pObRuANiND"></script>
+</head>
+<body>
+	<div id="l-map"></div>
+	<div id="r-result">
+		<input type="button" value="批量地址解析" onclick="bdGEO()" />
+		<div id="result"></div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("l-map");
+	map.centerAndZoom(new BMap.Point(109.84502,19.239202), 13);
+	map.enableScrollWheelZoom(true);
+	var index = 0;
+	var myGeo = new BMap.Geocoder();
+	var adds = [
+'白马井',
+'白马井市',
+'白坡里',
+'白坡里路',
+'百花谷',
+'不夜城',
+'昌城村农贸市场',
+'昌江',
+'昌江县',
+'昌江县城宝真超市',
+'澄迈县老城镇迎宾路玉海金华小区',
+'澄迈中学',
+'川渝商场',
+'从椰岛广场',
+'大小洞天景区',
+'儋州光村',
+'儋州那大镇',
+'儋州市白马井',
+'儋州市合罗农场',
+'儋州市那大镇',
+'儋州市那大镇解放北路',
+'儋州市那大镇解放路',
+'儋州市那大镇万福市场',
+'定安某小区',
+'定安天籁谷小区1幢',
+'定安县',
+'定安县乡江丽景小区11栋',
+'东方',
+'东方海郡小区',
+'东方海郡小区3栋',
+'东方山海湾小区',
+'东方市',
+'凤凰菜市场',
+'福山镇菜市场',
+'富强巷',
+'港口维也纳国际酒店',
+'港口希尔悦酒店',
+'广东徐闻海安新港',
+'广西北海港',
+'广州',
+'桂林',
+'哈尔滨',
+'海安',
+'海安港',
+'海安旧港',
+'海安新港',
+'海口',
+'海口福达美食街',
+'海口港',
+'海口丽华大酒店',
+'海口龙华区金宇街道金地路',
+'海口美兰机场',
+'海口美兰区蓝天街道白坡里',
+'海口骑楼小吃街',
+'海口汽车西站',
+'海口琼山区',
+'海口日月广场',
+'海口市',
+'海口市凯威大酒店',
+'海口市蓝天路',
+'海口市龙华区城西镇鸿侨公寓',
+'海口市龙华区城西镇金南苑小区B1栋',
+'海口市龙华区义龙西路汉庭酒店新温泉分店',
+'海口市美兰区',
+'海口市美兰区三江农场',
+'海口市琼山区',
+'海口西站',
+'海口新港',
+'海口兴泰粤海酒店',
+'海口秀英港',
+'海南美兰机场',
+'海南文昌市月亮城小区',
+'海南西部中心医院',
+'海医附',
+'杭州',
+'后坑村',
+'湖北',
+'湖北省',
+'吉阳区',
+'嘉积镇温泉天来泉',
+'解放路天懋超市',
+'乐东县',
+'临高县越丰宝宾馆大厅',
+'三亚市崖州区南滨佳康宾馆',
+'三亚市崖州区南山花园小区',
+'三亚市崖州区施顿花园',
+'三亚天涯区大好河山旅',
+'三亚湾',
+'三亚湾港务码头',
+'三亚湾森林公园',
+'石碌新地税局宿舍',
+'台湾风情小镇小区',
+'天涯海角景区',
+'天涯区',
+'天涯区升升超市',
+'天涯区羊栏市场',
+'头铺村菜市场',
+'万达广场三楼',
+'万宁',
+'万宁神州半岛',
+'万宁石梅湾',
+'万宁市石梅湾九里三期',
+'万宁市文化商业广场广百汇超市',
+'万宁文化商业广场广百汇超市',
+'万泉河家园小区',
+'万应堂大药房',
+'旺佳旺超市南沙店',
+'文昌',
+'文昌昌洒镇',
+'文昌东郊',
+'文昌公园',
+'秀英区锦地翰城Ⅱ期19栋',
+'崖州',
+'雅居乐售楼部',
+'友谊阳光城御花园鲜花花店',
+'月亮城小区',
+'月亮湾农贸市场',
+'湛江',
+'长沙',
+'郑州',
+'中沙路头铺农贸市场',
+'重庆',
+'紫荆11号轮渡'
+
+	];
+	function bdGEO(){
+		if (index < adds.length) {
+			var add = adds[index];
+			geocodeSearch(add);
+			index++;
+		}
+	}
+	function geocodeSearch(add){
+		if(index < adds.length){
+			setTimeout(window.bdGEO,400);
+		} 
+		myGeo.getPoint(add, function(point){
+			if (point) {
+				//document.getElementById("result").innerHTML +=  index + "'" + add + "':[" + point.lng + "," + point.lat + "],</br>";
+				document.getElementById("result").innerHTML +=  "'" + add + "':[" + point.lng + "," + point.lat + "],</br>";
+				var address = new BMap.Point(point.lng, point.lat);
+				addMarker(address,new BMap.Label(index+":"+add,{offset:new BMap.Size(20,-10)}));
+			}
+		}, "海南省");
+	}
+	// 编写自定义函数,创建标注
+	function addMarker(point,label){
+		var marker = new BMap.Marker(point);
+		map.addOverlay(marker);
+		marker.setLabel(label);
+	}
+</script>
+
